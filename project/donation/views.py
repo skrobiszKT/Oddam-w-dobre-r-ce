@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.views import View
 
-from donation.models import Donation, Institution, TYPES
+from donation.models import Donation, Institution
 
 
 # Create your views here.
@@ -23,7 +23,6 @@ class LandingPageView(View):
             "type1": institutions_type_1,
             "type2": institutions_type_2,
             "type3": institutions_type_3,
-            "types": TYPES
         }
         return render(request, "index.html", ctx)
 
