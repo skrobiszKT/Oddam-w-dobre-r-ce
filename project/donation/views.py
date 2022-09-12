@@ -3,8 +3,9 @@ from django.shortcuts import render, get_object_or_404, redirect, get_list_or_40
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from donation.models import Donation, Institution
+from donation.models import Donation, Institution, Category
 
 
 # Create your views here.
@@ -28,9 +29,17 @@ class LandingPageView(View):
         }
         return render(request, "index.html", ctx)
 
-class AddDonationView(View):
+class AddDonationView(LoginRequiredMixin, View):
+    login_url = "login"
     def get(self, request):
-        return render(request, "form.html", {})
+        categories = Category.objects.all()
+        institutions = Institution.objects.all()
+        ctx = {
+            "categories": categories,
+            "institutions": institutions
+        }
+        return render(request, "form.html", ctx)
+
 
 class LoginView(View):
     def get(self, request):
@@ -43,7 +52,11 @@ class LoginView(View):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("index")
+            next_url = request.GET.get('next')
+            if next_url:
+                return HttpResponseRedirect(next_url)
+            else:
+                return redirect("index")
         else:
             return redirect("register")
 
