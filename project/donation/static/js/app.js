@@ -234,6 +234,31 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
+      //filtering institutions in step 3 by categories chosen in step 5:
+
+      let checkedCategories = document.querySelectorAll(".chosen-category")
+
+      let categoryBoxes = []
+      checkedCategories.forEach(function (box) {
+        if(box.checked) {
+          categoryBoxes.push(box.value)
+        }
+      })
+
+      let institutions = document.querySelectorAll("input[type=radio]")
+
+      institutions.forEach(function (org) {
+        org.parentElement.style.display = "flex"
+        categoryBoxes.forEach(function (box) {
+          if(!org.dataset.categoryids.includes(box)) {
+            org.parentElement.style.display = "none"
+          }
+        })
+
+      })
+
+
+
       // TODO: get data from inputs and show them in summary
     }
 

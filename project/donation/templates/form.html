@@ -106,16 +106,16 @@ Form
           <div data-step="3">
             <h3>Wybierz organizacje, której chcesz pomóc:</h3>
 {% for institution in institutions %}
-            <div class="form-group form-group--checkbox institutions">
+            <div class="form-group form-group--checkbox">
               <label>
-                <input type="radio" name="organization" value={{ institution.id }} />
+                <input type="radio" class='institution' name="organization" value="{{ institution.id }}"  data-categoryids="{{ institution.cat_id_list }}" />
                 <span class="checkbox radio"></span>
                 <span class="description">
                   <div class="title">{{ institution.get_type_display }} "{{ institution.name }}"</div>
                   <div class="subtitle">
                     Cel i misja: {{ institution.description }}
                   </div>
-                    <input type="hidden" value="{{ institution.categories.all }}" name="cat-list" id="catl" >
+
                 </span>
               </label>
             </div>

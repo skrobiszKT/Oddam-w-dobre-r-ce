@@ -23,6 +23,9 @@ class Institution(models.Model):
         cat_list = ", ".join(cat.name for cat in self.categories.all())
         return cat_list
 
+    def cat_id_list(self):
+        cat_id_list = ", ".join(str(cat.id) for cat in self.categories.all())
+        return cat_id_list
 
 
 class Donation(models.Model):
