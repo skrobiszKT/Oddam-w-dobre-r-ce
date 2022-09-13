@@ -68,7 +68,9 @@ Form
                 <input class="chosen-category"
                   type="checkbox"
                   name="categories"
-                  value={{ category.id }}
+                  value="{{ category.id }}"
+                       data-catname = "{{ category.name }}"
+
                 />
                 <span class="checkbox"></span>
                 <span class="description"
@@ -90,7 +92,7 @@ Form
             <div class="form-group form-group--inline">
               <label>
                 Liczba 60l worków:
-                <input type="number" name="bags" step="1" min="1" />
+                <input class="bags" type="number" name="bags" step="1" min="1" />
               </label>
             </div>
 
@@ -102,7 +104,7 @@ Form
 
 
 
-          <!-- STEP 4 -->
+          <!-- STEP 3 -->
           <div data-step="3">
             <h3>Wybierz organizacje, której chcesz pomóc:</h3>
 {% for institution in institutions %}
@@ -111,7 +113,7 @@ Form
                 <input type="radio" class='institution' name="organization" value="{{ institution.id }}"  data-categoryids="{{ institution.cat_id_list }}" />
                 <span class="checkbox radio"></span>
                 <span class="description">
-                  <div class="title">{{ institution.get_type_display }} "{{ institution.name }}"</div>
+                  <div class="title institution-display">{{ institution.get_type_display }} "{{ institution.name }}"</div>
                   <div class="subtitle">
                     Cel i misja: {{ institution.description }}
                   </div>
@@ -127,7 +129,7 @@ Form
             </div>
           </div>
 
-          <!-- STEP 5 -->
+          <!-- STEP 4 -->
           <div data-step="4">
             <h3>Podaj adres oraz termin odbioru rzecz przez kuriera:</h3>
 
@@ -175,11 +177,11 @@ Form
             </div>
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>
-              <button type="button" class="btn next-step">Dalej</button>
+              <button type="button" class="btn next-step step4btn">Dalej</button>
             </div>
           </div>
 
-          <!-- STEP 6 -->
+          <!-- STEP 5 -->
           <div data-step="5">
             <h3>Podsumowanie Twojej darowizny</h3>
 
@@ -189,38 +191,28 @@ Form
                 <ul>
                   <li>
                     <span class="icon icon-bag"></span>
-                    <span class="summary--text"
-                      >4 worki ubrań w dobrym stanie dla dzieci</span
+                    <span class="summary--text summary-bags"
+                      ></span
                     >
                   </li>
 
                   <li>
                     <span class="icon icon-hand"></span>
-                    <span class="summary--text"
-                      >Dla fundacji "Mam marzenie" w Warszawie</span
+                    <span class="summary--text summary-institution"
+                      ></span
                     >
                   </li>
                 </ul>
               </div>
 
               <div class="form-section form-section--columns">
-                <div class="form-section--column">
-                  <h4>Adres odbioru:</h4>
-                  <ul>
-                    <li>Prosta 51</li>
-                    <li>Warszawa</li>
-                    <li>99-098</li>
-                    <li>123 456 789</li>
-                  </ul>
+                <div class="form-section--column summary-address">
+
+
                 </div>
 
-                <div class="form-section--column">
-                  <h4>Termin odbioru:</h4>
-                  <ul>
-                    <li>13/12/2018</li>
-                    <li>15:40</li>
-                    <li>Brak uwag</li>
-                  </ul>
+                <div class="form-section--column summary-collect-date">
+
                 </div>
               </div>
             </div>
