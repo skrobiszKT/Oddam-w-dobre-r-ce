@@ -234,6 +234,70 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
+      //filtering institutions in step 3 by categories chosen in step 5:
+
+      let checkedCategories = document.querySelectorAll(".chosen-category")
+
+      let categoryBoxes = []
+      checkedCategories.forEach(function (box) {
+        if(box.checked) {
+          categoryBoxes.push(box.value)
+        }
+      })
+
+      let institutions = document.querySelectorAll("input[type=radio]")
+
+      institutions.forEach(function (org) {
+        org.parentElement.style.display = "flex"
+        categoryBoxes.forEach(function (box) {
+          if(!org.dataset.categoryids.includes(box)) {
+            org.parentElement.style.display = "none"
+          }
+        })
+
+      })
+      //display donation data in step 5 summary:
+      const step4nextBtn = document.querySelector(".step4btn")
+      step4nextBtn.addEventListener("click", function () {
+        let summaryBags = document.querySelector(".summary-bags")
+        let bags = document.querySelector(".bags").value
+        let summaryCategories = []
+        checkedCategories.forEach(function (box) {
+        if(box.checked) {
+          summaryCategories.push(" " + box.dataset.catname)
+        }
+      })
+        summaryBags.innerText = `Worki zawierające ${summaryCategories} w liczbie ${bags}`
+        let institution = document.querySelector('input[name=organization]:checked')
+        let instDisplayData =  institution.parentElement.querySelector(".institution-display").innerText
+        let summaryInstitution = document.querySelector(".summary-institution")
+        summaryInstitution.innerText = `Dla: ${instDisplayData}`
+            let summaryAddress = document.querySelector(".summary-address")
+        let street = document.querySelector('input[name=address]')
+        let city = document.querySelector('input[name=city]')
+        let postcode = document.querySelector('input[name=postcode]')
+        let phone = document.querySelector('input[name=phone]')
+
+                summaryAddress.innerHTML =`<h4>Adres odbioru:</h4>
+                    <ul>
+                    <li>${street.value}</li>
+                    <li>${city.value}</li>
+                    <li>${postcode.value}</li>
+                    <li>${phone.value}</li>
+                  </ul>`
+        let summaryCollectDate = document.querySelector('.summary-collect-date')
+        let date = document.querySelector('input[name=data]')
+        let time = document.querySelector('input[name=time]')
+        let moreInfo = document.querySelector('textarea[name=more_info]')
+        summaryCollectDate.innerHTML = `<h4>Termin odbioru:</h4>
+                  <ul>
+                    <li>${date.value}</li>
+                    <li>${time.value}</li>
+                    <li>${moreInfo.value}</li>
+                  </ul>`
+      })
+
+
       // TODO: get data from inputs and show them in summary
     }
 
@@ -243,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function() {
      * TODO: validation, send data to server
      */
     submit(e) {
-      e.preventDefault();
+      // e.preventDefault();
       this.currentStep++;
       this.updateForm();
     }

@@ -23,6 +23,9 @@ class Institution(models.Model):
         cat_list = ", ".join(cat.name for cat in self.categories.all())
         return cat_list
 
+    def cat_id_list(self):
+        cat_id_list = ", ".join(str(cat.id) for cat in self.categories.all())
+        return cat_id_list
 
 
 class Donation(models.Model):
@@ -35,7 +38,7 @@ class Donation(models.Model):
     city = models.CharField(max_length=256)
     zip_code = models.CharField(max_length=6)
     pick_up_date = models.DateField(null=True)
-    pick_up_time = models.DateTimeField(null=True)
+    pick_up_time = models.TimeField(null=True)
     pick_up_comment = models.TextField(null=True)
     user = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
 
