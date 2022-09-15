@@ -27,6 +27,9 @@ class Institution(models.Model):
         cat_id_list = ", ".join(str(cat.id) for cat in self.categories.all())
         return cat_id_list
 
+    def __str__(self):
+        return f"{self.get_type_display()} {self.name}"
+
 
 class Donation(models.Model):
     quantity = models.IntegerField()
