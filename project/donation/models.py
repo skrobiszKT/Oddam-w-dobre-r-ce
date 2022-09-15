@@ -45,3 +45,9 @@ class Donation(models.Model):
     pick_up_comment = models.TextField(null=True)
     user = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
 
+    def cat_str(self):
+        categories = []
+        for category in self.categories.all():
+            categories.append(category.name)
+        categories = ", ".join(categories)
+        return categories

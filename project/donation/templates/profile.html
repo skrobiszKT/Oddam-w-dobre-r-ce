@@ -1,0 +1,31 @@
+{%  extends "base.html" %}
+{%  block title %}
+Profil użytkownika
+{%  endblock %}
+{%  block header %}
+<header>
+     {% include "navbar.html" %}
+    </header>
+{% endblock %}
+{%  block content %}
+<section class="profile">
+<h2>Twój profil:</h2>
+<p>Nazwa użytkownika: {{ user.username }}</p>
+<p>Imię: {{ user.first_name }}</p>
+<p>Nazwisko: {{ user.last_name }}</p>
+<p>Adres email: {{ user.email }}</p>
+</section>
+    <section class="profile-donations">
+    <h2>Przekazane dary:</h2>
+    <ol>
+        {% for donation in user.donation_set.all %}
+        <li>Data i czas odbioru: {{ donation.pick_up_date }}, {{ donation.pick_up_time }}
+            <ul>
+            <li>Worki w liczbie {{ donation.quantity }} sztuk zawierające: {{ donation.cat_str }}</li>
+            <li>Przekazane dla: {{ donation.institution.get_type_display }} {{ donation.institution.name }}</li>
+            </ul>
+        </li>
+        {% endfor %}
+    </ol>
+    </section>
+{% endblock %}
