@@ -110,7 +110,13 @@ class RegisterView(View):
 
         return redirect('login')
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
+    login_url = "login"
     def get(self, request):
         logout(request)
         return redirect("index")
+
+class ProfileView(LoginRequiredMixin, View):
+    login_url = "login"
+    def get(self, request):
+        return render(request, "profile.html", {})

@@ -27,6 +27,9 @@ class Institution(models.Model):
         cat_id_list = ", ".join(str(cat.id) for cat in self.categories.all())
         return cat_id_list
 
+    def __str__(self):
+        return f"{self.get_type_display()} {self.name}"
+
 
 class Donation(models.Model):
     quantity = models.IntegerField()
@@ -42,3 +45,9 @@ class Donation(models.Model):
     pick_up_comment = models.TextField(null=True)
     user = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
 
+    def cat_str(self):
+        categories = []
+        for category in self.categories.all():
+            categories.append(category.name)
+        categories = ", ".join(categories)
+        return categories
