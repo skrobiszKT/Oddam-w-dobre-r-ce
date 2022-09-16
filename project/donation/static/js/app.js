@@ -316,4 +316,8 @@ document.addEventListener("DOMContentLoaded", function() {
   if (form !== null) {
     new FormSteps(form);
   }
+  const submit_button = document.querySelector(".hash-reset")
+  submit_button.addEventListener("click", function () {
+  location.hash = ''
+  })
 });
