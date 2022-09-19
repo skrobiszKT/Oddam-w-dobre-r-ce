@@ -3,8 +3,10 @@ from django.shortcuts import render, get_object_or_404, redirect, get_list_or_40
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
-from donation.models import Donation, Institution
+from donation.models import Donation, Institution, Category
 
 
 # Create your views here.
@@ -28,9 +30,51 @@ class LandingPageView(View):
         }
         return render(request, "index.html", ctx)
 
-class AddDonationView(View):
+class AddDonationView(LoginRequiredMixin, View):
+    login_url = "login"
     def get(self, request):
-        return render(request, "form.html", {})
+        categories = Category.objects.all()
+        institutions = Institution.objects.all()
+        ctx = {
+            "categories": categories,
+            "institutions": institutions
+        }
+        return render(request, "form.html", ctx)
+    def post(self, request):
+        categories_id_list = request.POST.getlist('categories')
+        categories = []
+        for cat_id in categories_id_list:
+            category = get_object_or_404(Category, id=cat_id)
+            categories.append(category)
+
+        bags = request.POST.get('bags')
+        institution_id = request.POST.get('organization')
+        institution = get_object_or_404(Institution, id=institution_id)
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        postcode = request.POST.get('postcode')
+        phone = request.POST.get('phone')
+        date = request.POST.get('data')
+        time = request.POST.get('time')
+        comment = request.POST.get('more_info')
+
+        donation = Donation.objects.create(quantity=bags, institution=institution,
+                                           address=address,
+                                           phone_number=phone,
+                                           city=city,
+                                           zip_code=postcode,
+                                           pick_up_date=date,
+                                           pick_up_time=time,
+                                           pick_up_comment=comment,
+                                           user=request.user
+                                           )
+
+        for category in categories:
+            donation.categories.add(category)
+
+        return render(request, "form-confirmation.html", {})
+
+
 
 class LoginView(View):
     def get(self, request):
@@ -40,12 +84,21 @@ class LoginView(View):
         username = request.POST.get("email")
         password = request.POST.get("password")
 
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("index")
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                next_url = request.GET.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return redirect("index")
+            else:
+                return redirect("register")
+
         else:
-            return redirect("register")
+            messages.error(request, "Podaj wszystkie dane!")
+            return redirect("login")
 
 class RegisterView(View):
     def get(self, request):
@@ -57,13 +110,34 @@ class RegisterView(View):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
+        if name and surname and email and password:
+
+            if User.objects.filter(email=email):
+                messages.error(request, "Taki użytkownik już istnieje!")
+                return redirect("register")
+
+            else:
+                if len(password) < 8:
+                    messages.error(request, "Za krótkie hasło!")
+                    return redirect("register")
+
+        else:
+            messages.error(request, "Podaj wszystkie dane!")
+            return redirect("register")
+
         new_user = User.objects.create_user(
             username=email, email=email, password=password, first_name=name, last_name=surname
         )
 
         return redirect('login')
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
+    login_url = "login"
     def get(self, request):
         logout(request)
         return redirect("index")
+
+class ProfileView(LoginRequiredMixin, View):
+    login_url = "login"
+    def get(self, request):
+        return render(request, "profile.html", {})
