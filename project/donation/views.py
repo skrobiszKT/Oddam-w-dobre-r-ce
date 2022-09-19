@@ -4,6 +4,7 @@ from django.views import View
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from donation.models import Donation, Institution, Category
 
@@ -83,16 +84,21 @@ class LoginView(View):
         username = request.POST.get("email")
         password = request.POST.get("password")
 
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            next_url = request.GET.get('next')
-            if next_url:
-                return HttpResponseRedirect(next_url)
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                next_url = request.GET.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return redirect("index")
             else:
-                return redirect("index")
+                return redirect("register")
+
         else:
-            return redirect("register")
+            messages.error(request, "Podaj wszystkie dane!")
+            return redirect("login")
 
 class RegisterView(View):
     def get(self, request):
@@ -103,6 +109,21 @@ class RegisterView(View):
         surname = request.POST.get("surname")
         email = request.POST.get("email")
         password = request.POST.get("password")
+
+        if name and surname and email and password:
+
+            if User.objects.filter(email=email):
+                messages.error(request, "Taki użytkownik już istnieje!")
+                return redirect("register")
+
+            else:
+                if len(password) < 8:
+                    messages.error(request, "Za krótkie hasło!")
+                    return redirect("register")
+
+        else:
+            messages.error(request, "Podaj wszystkie dane!")
+            return redirect("register")
 
         new_user = User.objects.create_user(
             username=email, email=email, password=password, first_name=name, last_name=surname

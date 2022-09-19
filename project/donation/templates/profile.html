@@ -18,7 +18,7 @@ Profil użytkownika
     <section class="profile-donations">
     <h2>Przekazane dary:</h2>
     <ol>
-        {% for donation in user.donation_set.all %}
+        {% for donation in user.donation_set.all|dictsort:"pick_up_date" %}
         <li>Data i czas odbioru: {{ donation.pick_up_date }}, {{ donation.pick_up_time }}
             <ul>
             <li>Worki w liczbie {{ donation.quantity }} sztuk zawierające: {{ donation.cat_str }}</li>
