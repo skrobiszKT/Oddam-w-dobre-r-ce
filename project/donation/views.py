@@ -4,6 +4,7 @@ from django.views import View
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from donation.models import Donation, Institution, Category
 
@@ -103,6 +104,15 @@ class RegisterView(View):
         surname = request.POST.get("surname")
         email = request.POST.get("email")
         password = request.POST.get("password")
+
+        if User.objects.filter(email=email):
+            messages.error(request, "Taki użytkownik już istnieje!")
+            return redirect("register")
+
+        else:
+            if len(password) < 8:
+                messages.error(request, "Za krótkie hasło!")
+                return redirect("register")
 
         new_user = User.objects.create_user(
             username=email, email=email, password=password, first_name=name, last_name=surname
