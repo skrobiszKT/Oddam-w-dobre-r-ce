@@ -84,16 +84,21 @@ class LoginView(View):
         username = request.POST.get("email")
         password = request.POST.get("password")
 
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            next_url = request.GET.get('next')
-            if next_url:
-                return HttpResponseRedirect(next_url)
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                next_url = request.GET.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+                else:
+                    return redirect("index")
             else:
-                return redirect("index")
+                return redirect("register")
+
         else:
-            return redirect("register")
+            messages.error(request, "Podaj wszystkie dane!")
+            return redirect("login")
 
 class RegisterView(View):
     def get(self, request):
@@ -105,14 +110,20 @@ class RegisterView(View):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        if User.objects.filter(email=email):
-            messages.error(request, "Taki użytkownik już istnieje!")
-            return redirect("register")
+        if name and surname and email and password:
+
+            if User.objects.filter(email=email):
+                messages.error(request, "Taki użytkownik już istnieje!")
+                return redirect("register")
+
+            else:
+                if len(password) < 8:
+                    messages.error(request, "Za krótkie hasło!")
+                    return redirect("register")
 
         else:
-            if len(password) < 8:
-                messages.error(request, "Za krótkie hasło!")
-                return redirect("register")
+            messages.error(request, "Podaj wszystkie dane!")
+            return redirect("register")
 
         new_user = User.objects.create_user(
             username=email, email=email, password=password, first_name=name, last_name=surname
