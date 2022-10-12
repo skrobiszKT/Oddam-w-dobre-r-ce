@@ -1,4 +1,4 @@
-# Oddam-w-dobre-r-ce
+# Oddam w dobre ręce (PL)
 
 This is a project developed for Portfolio Lab course in Coders Lab.
 The main idea for this application is creating a platform where people could donate items they don't need anymore to one of the organizations verified by the very platform.
